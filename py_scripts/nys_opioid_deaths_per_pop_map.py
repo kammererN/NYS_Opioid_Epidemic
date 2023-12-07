@@ -13,24 +13,22 @@ data_path = "../data/nys_overdose_deaths_involving_opioids_by_county.csv"
 map_path = "../data/nys-counties.geojson"
 
 #  Define info related to the data to be used in the visualization
-data_source = "Vital Statistics Data as of November 2022"
-data_year = "2020"
-title = "Ratio of overdoses to population, per county,  " + data_year + "."
+title = "Percent of the population experiencing a fatal overdose, per county, 2020."
 
 #  Read the overdose data into a pandas dataframe.
 overdoses_by_county = pd.read_csv(data_path)
 
-# C
+# Clean commas from population column
+overdoses_by_county["population"] = overdoses_by_county["population"].replace(',', '', regex=True)
 
 # Convert population from str to int
 overdoses_by_county = overdoses_by_county.astype({'population': 'int'})
 
-print(overdoses_by_county.head())
-
-# Create a new column in the overdoses_by_county dataframe, Overdose rate, populated from Overdoses/Population
+# Calculates Overdose rate, populated from Overdoses/Population
 overdoses_by_county['od rate'] = overdoses_by_county['overdoses'] / overdoses_by_county['population']
 
-print(overdoses_by_county.head())
+# Calculates overdose rate percent (for visualization)
+overdoses_by_county['od rate percent'] = (overdoses_by_county['overdoses'] / overdoses_by_county['population']) * 100
 
 #  Read the NYS county data into a geopandas dataframe
 nys_county_map = gpd.read_file(map_path)
@@ -49,20 +47,20 @@ nys_county_map_with_data_gdf = gpd.GeoDataFrame(nys_county_map_overdoses_by_coun
 nys_county_overdose_chloropleth_map = fol.Map(location=[42.917, -75.595], zoom_start=7)
 
 #  Def a linear color scale for the overdoses
-colormap = linear.YlOrRd_09.scale(nys_county_map_with_data_gdf['overdoses'].min(),
-                                  nys_county_map_with_data_gdf['overdoses'].max())
+colormap = linear.YlOrRd_09.scale(nys_county_map_with_data_gdf['od rate'].min(),
+                                  nys_county_map_with_data_gdf['od rate'].max())
 
 #  Adding the choropleth layer
 fol.Choropleth(
     geo_data=nys_county_map_with_data_gdf,
     name='Choropleth',
     data=nys_county_map_with_data_gdf,
-    columns=['name', 'overdoses'],
+    columns=['name', 'od rate percent'],
     key_on='feature.properties.name',
     fill_color='YlOrRd',
     fill_opacity=0.7,
     line_opacity=0.2,
-    legend_name='Overdose deaths involving opioids per county',
+    legend_name=title,
     highlight=True
  ).add_to(nys_county_overdose_chloropleth_map)
 
@@ -72,8 +70,8 @@ fol.features.GeoJson(
     name='Labels',
     style_function=lambda x: {'color':'transparent','fillColor':'transparent','weight':0},
     tooltip=fol.features.GeoJsonTooltip(
-        fields=['name', 'overdoses', 'population'],
-        aliases=['County', 'Overdoses', 'Population'],
+        fields=['name', 'overdoses', 'population', 'od rate percent'],
+        aliases=['County', 'Overdoses', 'Population', 'Overdose Rate (%)'],
         localize=True
     )
 ).add_to(nys_county_overdose_chloropleth_map)
