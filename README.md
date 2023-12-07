@@ -1,6 +1,6 @@
 # NYS_Opioid_Epidemic
 Maps and data analysis of the Opioid Epidemic in NYS as of data available December 2023. 
-- Analysis done with Pandas, GeoPandas, and Folium
+- Analysis done with Pandas, GeoPandas, Folium, and MatPlotLib
 
 ![Scatterplot](https://github.com/kammererN/NYS_Opioid_Epidemic/blob/master/charts/Scatterplot%20of%20Overdose%20Rates%20to%20GINI%20Coefficient%20Indices%20per%20County.png)
 
