@@ -13,12 +13,24 @@ data_path = "../data/nys_overdose_deaths_involving_opioids_by_county.csv"
 map_path = "../data/nys-counties.geojson"
 
 #  Define info related to the data to be used in the visualization
-title = "Overdose deaths involving any opioid, crude rate per 100,000 population"
 data_source = "Vital Statistics Data as of November 2022"
 data_year = "2020"
+title = "Ratio of overdoses to population, per county,  " + data_year + "."
 
 #  Read the overdose data into a pandas dataframe.
 overdoses_by_county = pd.read_csv(data_path)
+
+# C
+
+# Convert population from str to int
+overdoses_by_county = overdoses_by_county.astype({'population': 'int'})
+
+print(overdoses_by_county.head())
+
+# Create a new column in the overdoses_by_county dataframe, Overdose rate, populated from Overdoses/Population
+overdoses_by_county['od rate'] = overdoses_by_county['overdoses'] / overdoses_by_county['population']
+
+print(overdoses_by_county.head())
 
 #  Read the NYS county data into a geopandas dataframe
 nys_county_map = gpd.read_file(map_path)
@@ -30,6 +42,7 @@ nys_county_map_overdoses_by_county = pd.merge(
     left_on='name',
     right_on='name'
 )
+
 nys_county_map_with_data_gdf = gpd.GeoDataFrame(nys_county_map_overdoses_by_county)
 
 #  Create a Folium map centered on New York State

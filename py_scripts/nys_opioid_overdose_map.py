@@ -13,9 +13,9 @@ data_path = "../data/nys_overdose_deaths_involving_opioids_by_county.csv"
 map_path = "../data/nys-counties.geojson"
 
 #  Define info related to the data to be used in the visualization
-title = "Overdose deaths involving any opioid, crude rate per 100,000 population"
 data_source = "Vital Statistics Data as of November 2022"
 data_year = "2020"
+title = "Overdose deaths involving opioids per county, " + data_year + "."
 
 #  Read the overdose data into a pandas dataframe.
 overdoses_by_county = pd.read_csv(data_path)
@@ -46,10 +46,10 @@ fol.Choropleth(
     data=nys_county_map_with_data_gdf,
     columns=['name', 'overdoses'],
     key_on='feature.properties.name',
-    fill_color='YlOrRd',
+    fill_color='Reds',
     fill_opacity=0.7,
     line_opacity=0.2,
-    legend_name='Overdose deaths involving opioids per county',
+    legend_name=title,
     highlight=True
  ).add_to(nys_county_overdose_chloropleth_map)
 

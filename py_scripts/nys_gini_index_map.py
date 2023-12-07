@@ -12,6 +12,9 @@ from branca.colormap import linear
 data_path = "../data/nys_gini_coefficient_by_county.csv"
 map_path = "../data/nys-counties.geojson"
 
+#  Define info related to the data to be used in the visualization
+title = "Wealth inequality per county, as measured by the GINI Index."
+
 #  Read the overdose data into a pandas dataframe.
 gini_by_county = pd.read_csv(data_path)
 
@@ -41,10 +44,10 @@ fol.Choropleth(
     data=nys_county_map_with_data_gdf,
     columns=['name', 'gini index'],
     key_on='feature.properties.name',
-    fill_color='YlOrRd',
+    fill_color='YlOrBr',
     fill_opacity=0.7,
     line_opacity=0.2,
-    legend_name='Wealth inequality per county, as measured by the GINI Index.',
+    legend_name=title,
     highlight=True
  ).add_to(nys_county_gini_chloropleth_map)
 
