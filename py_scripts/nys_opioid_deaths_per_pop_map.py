@@ -57,7 +57,7 @@ fol.Choropleth(
     data=nys_county_map_with_data_gdf,
     columns=['name', 'od rate percent'],
     key_on='feature.properties.name',
-    fill_color='YlOrRd',
+    fill_color='Reds',
     fill_opacity=0.7,
     line_opacity=0.2,
     legend_name=title,
